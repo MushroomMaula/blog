@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "blog"
+version = "0.1.0"
+description = ""
+authors = ["Max Rausch-Dupont <maxrd79@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+Sphinx = ">=4,<5"
+myst-parser = "^0.18.0"
+sphinx-book-theme = "^0.3.3"
+ablog = "^0.10.26"
+myst-nb = "^0.16.0"
+watchdog = "^2.1.9"
+sphinx_design = "^0.2.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

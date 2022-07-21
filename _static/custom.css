@@ -1,0 +1,23 @@
+/* Bio area */
+div.profile-pic {
+    margin-top: 1em;
+}
+
+div.profile-pic img {
+    border-radius: 500px;
+    width: 190px;
+    height: 190px;
+    max-width: 190px;
+    margin: 0 auto;
+    display: block;
+    object-fit: cover;
+}
+
+.bio-info {
+    margin: 1em auto;
+    max-width: 220px;
+}
+
+.name {
+    font-size: 1.5em;
+}
