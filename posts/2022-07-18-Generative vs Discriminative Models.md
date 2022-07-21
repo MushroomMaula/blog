@@ -12,12 +12,12 @@ Now there are two fundamentally different approaches to estimating $P(y|x)$:
 A generative model calculates the *joint* probability density $P(x, y)$, which can also be used to generate new data pairs $(x, y)$ or to discriminate using *Bayes' rule*:
 $$ P(y|x) = \frac{P(x|y) \cdot P(y)}{P(x)} = \frac{P(x, y)}{P(x)} $$
 
-Examples for generative models include: [linear discriminant analysis](https://en.wikipedia.org/wiki/Linear_discriminant_analysis) and [naive Bayes' classifier](https://en.wikipedia.org/wiki/Naive_Bayes_classifier)
+Examples for generative models include: [linear discriminant analysis](https://en.wikipedia.org/wiki/Linear_discriminant_analysis) and [naive Bayes' classifier](https://en.wikipedia.org/wiki/Naive_Bayes_classifier).
 
 ## Discriminative models
 A discriminative model on the other hand only "learns" the posterior probability $P(y|x)$ and is not able to generate new data.
 
-Examples for discriminative models are: [logistic regression](https://en.wikipedia.org/wiki/Logistic_regression), [support vector machines](https://en.wikipedia.org/wiki/Support-vector_machine) and [decision trees](https://en.wikipedia.org/wiki/Logistic_regression)
+Examples for discriminative models are: [logistic regression](https://en.wikipedia.org/wiki/Logistic_regression), [support vector machines](https://en.wikipedia.org/wiki/Support-vector_machine) and [decision trees](https://en.wikipedia.org/wiki/Decision_tree_learning).
 
 
 More generally we can say that a generative model learns the distribution of the classes, so that we can generate new instances, while a discriminative model learns the decision boundary between the classes.
