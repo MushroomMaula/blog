@@ -32,8 +32,12 @@ extensions = [
     "myst_nb",
     "sphinx_design",
     "ablog",
-    "sphinx.ext.intersphinx"
+    "sphinx.ext.intersphinx",
+    "sphinxcontrib.bibtex"
 ]
+
+bibtex_bibfiles = ['references.bib']
+
 
 myst_enable_extensions = [
     "amsmath",

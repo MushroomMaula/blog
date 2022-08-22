@@ -13,6 +13,7 @@ ablog = "^0.10.26"
 myst-nb = "^0.16.0"
 watchdog = "^2.1.9"
 sphinx_design = "^0.2.0"
+sphinxcontrib-bibtex = "^2.5.0"
 
 [tool.poetry.dev-dependencies]
 
