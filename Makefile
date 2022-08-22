@@ -19,6 +19,8 @@ help:
 deploy:
 	poetry run ablog build && rsync -avz --delete _website/ vps:"/var/www/blog"
 
+.PHONY: deploy
+
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
