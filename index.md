@@ -10,7 +10,7 @@ You can find all of my posts below or [here](blog.md).
 [Or learn more about me and some of my projects.](about.md)
 
 
-## Posts
+## 📝 Posts
 ```{postlist}
 :date: "%Y-%m-%d"
 :format: "{date}  {title}"
