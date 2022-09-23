@@ -1,6 +1,5 @@
 ---
 category: machine learning
-draft: true
 ---
 
 # Linear Regression
