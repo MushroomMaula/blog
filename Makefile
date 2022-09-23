@@ -16,8 +16,11 @@ help:
 
 .PHONY: help Makefile
 
+build:
+	poetry run ablog build
+
 deploy:
-	poetry run ablog build && rsync -avz --delete _website/ vps:"/var/www/blog"
+	poetry run ablog clean && poetry run ablog build && rsync -avz --delete _website/ vps:"/var/www/blog"
 
 .PHONY: deploy
 
