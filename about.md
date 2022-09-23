@@ -1,5 +1,5 @@
 # About me
-I am student at Saarland University and currently in my 4th semester of my undergraduate degree "Data Science and Artificial Intelligence".
+I am student at Saarland University and currently in my 5th semester of my undergraduate degree "Data Science and Artificial Intelligence".
 
 In my free time I like to try out the machine learning concepts taught at university or go rock climbing.
 
