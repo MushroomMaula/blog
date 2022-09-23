@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <title>RLP Kernzonen Karte</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+    integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+    integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+    crossorigin=""></script>
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: sans-serif;
+         }
+         
+        #map {
+            height: 100%;
+        }
+        .progress-container {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex-flow: column;
+        }
+
+        #error-msg {
+            color: rgb(239 68 68);
+        }
+
+        .legend {
+            background: #d1d5db;
+            padding: 6px 8px;
+            line-height: 24px;
+            opacity: 0.8;
+            border-radius: 0.4em;
+        }
+
+        .legend h4 {
+            text-align: center;
+            font-size: 16px;
+            margin: 2px 12px 8px;
+            color: #777;
+        }
+          
+        .legend span {
+            position: relative;
+            bottom: 3px;
+        }
+          
+        .legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin: 0 8px 0 0;
+            opacity: 0.7;
+        }
+          
+        .legend i.icon {
+            background-size: 18px;
+            background-color: rgba(255, 255, 255, 1);
+        }
+    </style>
+  </head>
+  <body>
+    <div class="progress-container" id="progress-container">
+        <div>
+            <p id="error-msg"></p>
+            <p id="progress-bar-label"><label for="progress-bar">Lade Karten…</label></p>
+            <progress id="progress-bar" aria-label="Lade Karten…"></progress>
+        </div>
+    </div>
+    <div id="map" aria-busy="true" aria-describedby="progress-bar" hidden>
+        <!-- content for this region is loading -->
+    </div>
+
+    <script>
+        const API_KERNZONE_TYP = "873057858"
+        const ZONE_API_URL = "https://berichte1.naturschutz.rlp.de/oneo/collections/naturparkzone/items/?f=json&limit=200";
+        const BORDER_API_URL = "https://www.geoportal.rlp.de/spatial-objects/314/collections/vermkv:landesgrenze_rlp/items?f=json"
+
+        /**
+        * Returns true if the Layer is a kernzone, i.e. the ntpZonentyp, in the 
+        * properties field is equal to "873057858".
+        * @param {Object} feature A GeoJSON feature
+        * @param {Layer} layer leaflet layer
+        * @returns True if the feature is a kernzone
+        */
+        function isKernzone(feature, layer) {
+        return feature.properties && feature.properties.ntpZonentyp && feature.properties.ntpZonentyp == API_KERNZONE_TYP;
+        }
+
+        /**
+        * Adds mouseover events and tooltips
+        * @param {Object} feature GeoJSON feature
+        * @param {Layer} layer leaflet layer
+        */
+        function addLayerEvents(feature, layer) {
+        // Add the `Bezeichnung` of the feature as a tooltip, to provide
+        // information to the user
+        if (feature.properties && feature.properties.bezeichnung) {
+            layer.bindTooltip(feature.properties.bezeichnung);
+        }
+
+        // Colors the zones which the mouse is over in blue, reverts back to the default color on leaving
+        const origStyle = layer.options.style;
+        layer.on("mouseover", () => {
+            let updatedStyle = Object.assign({}, origStyle);
+            updatedStyle.color = "limegreen";
+            updatedStyle.weight = 3;
+            layer.setStyle(updatedStyle)
+        })
+        layer.on("mouseout", () => {
+            layer.setStyle(origStyle)
+        })
+        }
+
+        /**
+        * Fetches GeoJSON from the given URL and converts it to a leaflet useable GeoJSON object
+        * In case of an error shows an alert containing the error message.
+        * @param {String} url URL that returns valid GeoJSON
+        * @param {Object} options Leaflet GeoJSON options object
+        * @returns Leaflet GeoJSON object
+        */
+        async function fetchGeoJSON(url, options = {}) {
+        return fetch(url)
+            .then((response) => {
+            if (!response.ok) {
+                throw new Error("Die Daten konnten nicht geladen werden.")
+            }
+            return response.json()
+            })
+            .then((data) => {
+            return L.geoJSON(data, options)
+            })
+            .catch((error) => {
+            alert('Fehler beim abrufen der Daten:\n' + error.message);
+            });
+        }
+
+
+        async function main() {
+            const kernzonen = await fetchGeoJSON(ZONE_API_URL, {
+                "style": {"color": "green", "fillOpacity": 0.3},
+                "onEachFeature": addLayerEvents,
+                "filter": isKernzone
+            });
+
+            const border = await fetchGeoJSON(BORDER_API_URL, {"style": {"color": "#d00aed", "opacity": 1, "fillOpacity": 0}});
+
+            const tiles = L.tileLayer(
+                'https://sgx.geodatenzentrum.de/wmts_topplus_open/tile/1.0.0/web_light/default/WEBMERCATOR/{z}/{y}/{x}.png', {
+                maxZoom: 19,
+                attribution: 'Kartendarstellung: &copy; <a href="http://www.bkg.bund.de"> Bundesamt für Kartographie und Geodäsie (2022)</a>, <a href="https://sg.geodatenzentrum.de/web_public/Datenquellen_TopPlus_Open.pdf">Datenquellen</a></br>'
+                + '<a href="https://berichte1.naturschutz.rlp.de/oneo/collections/naturparkzone/items/?f=html&limit=200">Die [Kernzone] Daten/Karten/Produkte</a> wurden unter Verwendung der amtlichen Geofachdaten des Landschaftsinformationssystems Rheinland-Pfalz erzeugt. Sie unterliegen der <a href="https://opendatacommons.org/licenses/odbl/">Open Database Lizenz</a></br>'
+                + '<a href="https://www.geoportal.rlp.de/spatial-objects/314/collections/vermkv:landesgrenze_rlp/items?&f=html">Daten zur Darstellung der Grenzen</a> bereitgestellt durch Landesamt für Vermessung und Geobasisinformation (LVermGeo) Rheinland-Pfalz (<a href="http://www.govdata.de/dl-de/by-2-0">Datenlizenz Deutschland – Namensnennung – Version 2.0</a>)'
+            })
+
+            const map = L.map('map', {
+                center: [50.1183, 7.3090], 
+                zoom: 8,
+                layers: [tiles, border, kernzonen]
+            });
+
+            const baseMaps = {
+                "OpenStreetMap": tiles,
+                
+            }
+
+            const overlayMaps = {
+                "Grenze": border,
+                "Kernzonen": kernzonen
+            }
+
+            const _layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+            const legend = L.control({position: "topright"});
+            legend.onAdd = (map) => {
+                let div = document.createElement("div");
+                div.setAttribute("class", "legend");
+                div.innerHTML += "<h4>Legende</h4>";
+                div.innerHTML += "<i style='background: green'></i><span>Kernzone</span></br>";
+                return div;
+            }
+            legend.addTo(map);
+            
+            return map;
+        }
+
+
+        main()
+        .then((map) => {
+            console.log("Loading finished successfully");
+
+            // Update UI
+            const progressBarContainer = document.getElementById("progress-container");
+            const mapElem = document.getElementById("map");
+            mapElem.setAttribute("aria-busy", false);
+            mapElem.removeAttribute("hidden");
+            map.invalidateSize();
+            progressBarContainer.remove();
+
+        })
+        .catch((error) => {
+            console.error("Error loading the data.", error);
+            // Update UI
+            const errElem = document.getElementById("error-msg");
+            errElem.innerHTML = 'Fehler beim abrufen der Daten:\n' + error.message;
+
+            document.getElementById("progress-bar").remove();
+            document.getElementById("progress-bar-label").remove();
+            
+            const retryButton = document.createElement("button");
+            retryButton.textContent = "Erneut versuchen";
+            retryButton.onclick = (e) => window.location.reload();
+
+            // Display retry button
+            const progressContainer = document.getElementById("progress-container");
+            progressContainer.appendChild(retryButton);
+        });
+    </script>
+  </body>
+</html>
