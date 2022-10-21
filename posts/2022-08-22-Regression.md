@@ -75,7 +75,7 @@ Hence the solution to the maximum likelihood estimation is also:
 
 $$ \hat{w} = (X^T X)^{-1} X^T y $$
 
-To me this is quite a remarkable explanation of why we can use the squared error.
+To me this is quite a remarkable explanation of why the squared error is used.
 
 
 ### One step further
