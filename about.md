@@ -21,6 +21,9 @@ Visit 🡪
 ## 🧗Climbing
 
 :::{card} Kernzonen map
+```{warning}
+Currently not working as the official API seems to have been shutdown. You can look at the _Kernzonen_ in the [official viewer](https://geodaten.naturschutz.rlp.de/kartendienste_naturschutz/index.php) under `Schutzgebiete > Intern. Schutzgebiete > ICUN-V Geschützte Landschaft > Biosphärenreservatzonen`
+```
 A small webpage that displays a map with all _Kernzonen_ of the german state Rhineland-Palatinate. Climbing and other activities that disturb the nature in those zones is prohibited. Even though there exists a [official viewer](https://geodaten.naturschutz.rlp.de/kartendienste_naturschutz/index.php) for those, it seems like some of the zones, especially in the _Pfälzer Wald_ region, are not getting displayed.
 +++
 ```{button-link} /climbing/map.html
